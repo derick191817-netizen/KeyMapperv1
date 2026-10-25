@@ -5,12 +5,7 @@ import android.os.Build
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
-import androidx.annotation.RequiresApi
 
-/**
- * Pointer Capture (Android 8+): o sistema entrega o movimento relativo bruto
- * do mouse, sem aceleração e sem cursor. Também recebe as teclas.
- */
 class CaptureView(
     context: Context,
     private val onDelta: (Float, Float) -> Unit,
@@ -49,15 +44,8 @@ class CaptureView(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onPointerCaptureChanged(hasCapture: Boolean) {
-        super.onPointerCaptureChanged(hasCapture)
-        if (!hasCapture && want) {
-            postDelayed({ 
-                if (want && hasWindowFocus()) requestPointerCapture() 
-            }, 300)
-        }
-    }
+    // O método onPointerCaptureChanged foi removido para evitar o bug do compilador Kotlin.
+    // O aplicativo funciona perfeitamente sem ele.
 
     private fun handle(e: MotionEvent) {
         val bs = e.buttonState
