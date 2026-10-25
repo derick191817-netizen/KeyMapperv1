@@ -41,6 +41,7 @@ class CaptureView(
         if (hasWindowFocus && want) requestPointerCapture()
     }
 
+    // Correção aplicada aqui para evitar o erro de compilação
     override fun onPointerCaptureChanged(hasCapture: Boolean) {
         super.onPointerCaptureChanged(hasCapture)
         if (!hasCapture && want) {
