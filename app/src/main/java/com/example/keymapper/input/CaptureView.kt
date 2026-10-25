@@ -1,9 +1,11 @@
 package com.example.keymapper.input
 
 import android.content.Context
+import android.os.Build
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
+import androidx.annotation.RequiresApi
 
 /**
  * Pointer Capture (Android 8+): o sistema entrega o movimento relativo bruto
@@ -28,24 +30,32 @@ class CaptureView(
     fun start() {
         want = true
         requestFocus()
-        if (hasWindowFocus()) requestPointerCapture()
+        if (hasWindowFocus() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            requestPointerCapture()
+        }
     }
 
     fun stop() {
         want = false
-        releasePointerCapture()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            releasePointerCapture()
+        }
     }
 
     override fun onWindowFocusChanged(hasWindowFocus: Boolean) {
         super.onWindowFocusChanged(hasWindowFocus)
-        if (hasWindowFocus && want) requestPointerCapture()
+        if (hasWindowFocus && want && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            requestPointerCapture()
+        }
     }
 
-    // Correção aplicada aqui para evitar o erro de compilação
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onPointerCaptureChanged(hasCapture: Boolean) {
         super.onPointerCaptureChanged(hasCapture)
         if (!hasCapture && want) {
-            postDelayed({ if (want && hasWindowFocus()) requestPointerCapture() }, 300)
+            postDelayed({ 
+                if (want && hasWindowFocus()) requestPointerCapture() 
+            }, 300)
         }
     }
 
